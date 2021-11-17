@@ -13,7 +13,22 @@ Lista::~Lista() {
 }
 
 Lista &Lista::operator=(const Lista &aCopiar) {
-    // Completar
+    Lista copia = *new Lista;
+    copia.longitud_ = aCopiar.longitud_;
+    if (aCopiar.longitud_ > 0){
+        copia.primero_ = new Nodo(aCopiar.primero_->valor);
+        Nodo *nodo_actual = copia.primero_;
+        copia.ultimo_ = nodo_actual;
+
+        int i = 1;
+        while(i < copia.longitud_){
+            nodo_actual->proximo = new Nodo(aCopiar.iesimo(i));
+            nodo_actual = nodo_actual->proximo;
+            copia.ultimo_ = nodo_actual;
+            i++;
+        }
+    }
+    // como hago aca para que devuelva este *this?????
     return *this;
 }
 
@@ -41,15 +56,35 @@ void Lista::agregarAtras(const int &elem) {
 
 void Lista::eliminar(Nat i) {
     // Completar
-    Nodo *nodo_byebye = this->primero_;
-    while (i > 0) {
-        nodo_byebye = nodo_byebye->proximo;
-        i--;
-    }
-    nodo_byebye->anterior->proximo = nodo_byebye->proximo;
-    nodo_byebye->proximo->anterior = nodo_byebye->anterior;
 
-    delete nodo_byebye;
+    if (longitud_ == 1){
+        delete this->primero_;
+        this->primero_ = nullptr;
+        this-> ultimo_ = nullptr;
+
+    } else {
+        Nodo *nodo_byebye = this->primero_;
+        while (i > 0) {
+            nodo_byebye = nodo_byebye->proximo;
+            i--;
+        }
+
+        if (nodo_byebye == this->primero_) {
+            Nodo* nuevo_primero = this->primero_->proximo;
+            //delete this->primero_;
+            this->primero_ = nuevo_primero;
+        } else if ( nodo_byebye == this->ultimo_){
+            Nodo* nuevo_ultimo = this->ultimo_->anterior;
+            //delete this->ultimo_;
+            this->ultimo_ = nuevo_ultimo;
+        } else {
+            nodo_byebye->anterior->proximo = nodo_byebye->proximo;
+            nodo_byebye->proximo->anterior = nodo_byebye->anterior;
+        }
+
+        delete nodo_byebye;
+    }
+    this->longitud_--;
 }
 
 int Lista::longitud() const {

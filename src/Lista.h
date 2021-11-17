@@ -88,13 +88,12 @@ public:
 private:
 
     struct Nodo {
-        Nodo(int v);
+        explicit Nodo(int v);
         Nodo* anterior;
         int valor;
         Nodo* proximo;
     };
 
-    //Nodo::Nodo(int v) {}
 
     Nodo* primero_;
     Nodo* ultimo_;
