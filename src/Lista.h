@@ -99,6 +99,7 @@ private:
     Nodo* ultimo_;
     int longitud_;
 
+    void destruirLista();
 };
 
 Lista::Nodo::Nodo(int v): anterior(nullptr), valor(v), proximo(nullptr) {}

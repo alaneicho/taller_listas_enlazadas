@@ -9,33 +9,37 @@ Lista::Lista(const Lista &l) : Lista() {
 }
 
 Lista::~Lista() {
-    // Completar
+    this->destruirLista();
+}
+
+void Lista::destruirLista() {
+    Nodo *proximo_a_borrar = this->primero_;
+    while (proximo_a_borrar != nullptr) {
+        Nodo *temp = proximo_a_borrar->proximo;
+        delete proximo_a_borrar;
+        proximo_a_borrar = temp;
+    }
+    this->primero_ = nullptr;
+    this->ultimo_ = nullptr;
+    this->longitud_ = 0;
 }
 
 Lista &Lista::operator=(const Lista &aCopiar) {
-    Lista copia = *new Lista;
-    copia.longitud_ = aCopiar.longitud_;
-    if (aCopiar.longitud_ > 0){
-        copia.primero_ = new Nodo(aCopiar.primero_->valor);
-        Nodo *nodo_actual = copia.primero_;
-        copia.ultimo_ = nodo_actual;
-
-        int i = 1;
-        while(i < copia.longitud_){
-            nodo_actual->proximo = new Nodo(aCopiar.iesimo(i));
-            nodo_actual = nodo_actual->proximo;
-            copia.ultimo_ = nodo_actual;
-            i++;
-        }
+    this->destruirLista();
+    int i = 0;
+    while (i < aCopiar.longitud()){
+        this->agregarAtras(aCopiar.iesimo(i));
+        i++;
     }
-    // como hago aca para que devuelva este *this?????
     return *this;
 }
 
 void Lista::agregarAdelante(const int &elem) {
     Nodo *nuevo_primero = new Nodo(elem);
     nuevo_primero->proximo = this->primero_;
-    //struct Nodo nuevo_primero = {nullptr, elem, this->primero_ };
+    if (this->longitud_ > 0) {
+        this->primero_->anterior = nuevo_primero;
+    }
     this->primero_ = nuevo_primero;
     if (longitud_ == 0) {
         this->ultimo_ = nuevo_primero;
@@ -46,7 +50,9 @@ void Lista::agregarAdelante(const int &elem) {
 void Lista::agregarAtras(const int &elem) {
     Nodo *nuevo_ultimo = new Nodo(elem);
     nuevo_ultimo->anterior = this->ultimo_;
-    //struct Nodo nuevo_ultimo = {this->ultimo_, elem, nullptr};
+    if (this->longitud_ > 0) {
+        this->ultimo_->proximo = nuevo_ultimo;
+    }
     this->ultimo_ = nuevo_ultimo;
     if (longitud_ == 0) {
         this->primero_ = nuevo_ultimo;
@@ -57,10 +63,10 @@ void Lista::agregarAtras(const int &elem) {
 void Lista::eliminar(Nat i) {
     // Completar
 
-    if (longitud_ == 1){
+    if (longitud_ == 1) {
         delete this->primero_;
         this->primero_ = nullptr;
-        this-> ultimo_ = nullptr;
+        this->ultimo_ = nullptr;
 
     } else {
         Nodo *nodo_byebye = this->primero_;
@@ -68,15 +74,14 @@ void Lista::eliminar(Nat i) {
             nodo_byebye = nodo_byebye->proximo;
             i--;
         }
-
         if (nodo_byebye == this->primero_) {
-            Nodo* nuevo_primero = this->primero_->proximo;
-            //delete this->primero_;
+            Nodo *nuevo_primero = this->primero_->proximo;
             this->primero_ = nuevo_primero;
-        } else if ( nodo_byebye == this->ultimo_){
-            Nodo* nuevo_ultimo = this->ultimo_->anterior;
-            //delete this->ultimo_;
+            this->primero_->anterior = nullptr;
+        } else if (nodo_byebye == this->ultimo_) {
+            Nodo *nuevo_ultimo = this->ultimo_->anterior;
             this->ultimo_ = nuevo_ultimo;
+            this->ultimo_->proximo = nullptr;
         } else {
             nodo_byebye->anterior->proximo = nodo_byebye->proximo;
             nodo_byebye->proximo->anterior = nodo_byebye->anterior;
@@ -97,9 +102,7 @@ const int &Lista::iesimo(Nat i) const {
         nodo_actual = nodo_actual->proximo;
         i--;
     }
-    return (int &) nodo_actual->valor;
-    // Completar
-    //assert(false);
+    return nodo_actual->valor;
 }
 
 int &Lista::iesimo(Nat i) {
@@ -109,7 +112,7 @@ int &Lista::iesimo(Nat i) {
         nodo_actual = nodo_actual->proximo;
         i--;
     }
-    return (int &) nodo_actual->valor;
+    return nodo_actual->valor;
     // Completar (hint: es igual a la anterior...)
     //assert(false);
 }
