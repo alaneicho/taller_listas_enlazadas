@@ -61,8 +61,6 @@ void Lista::agregarAtras(const int &elem) {
 }
 
 void Lista::eliminar(Nat i) {
-    // Completar
-
     if (longitud_ == 1) {
         delete this->primero_;
         this->primero_ = nullptr;
@@ -113,10 +111,19 @@ int &Lista::iesimo(Nat i) {
         i--;
     }
     return nodo_actual->valor;
-    // Completar (hint: es igual a la anterior...)
-    //assert(false);
 }
 
 void Lista::mostrar(ostream &o) {
-    // Completar
+    if (this->longitud() == 0 ){
+        o << "Lista vacia" <<endl;
+    } else {
+        Nodo* a_imprimir = this->primero_;
+        while (a_imprimir->proximo != nullptr){
+            o << a_imprimir->valor << ", ";
+            a_imprimir = a_imprimir->proximo;
+        }
+        o << this->ultimo_->valor;
+    }
 }
+
+
